@@ -14,7 +14,7 @@
 ## Công nghệ sử dụng
 
 - **Ngôn ngữ chính:** JavaScript
-- **Framework/thư viện:** (Vui lòng bổ sung chi tiết nếu có framework cụ thể như React, Vue, v.v.)
+- **Framework/thư viện:** Web3.js, Ethers.js.
 - **Quản lý dự án:** Sử dụng hệ thống version control Git qua GitHub
 
 ## Hướng dẫn cài đặt và chạy dự án
