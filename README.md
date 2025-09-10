@@ -38,7 +38,7 @@
 3. **Chạy dự án:**
    - Nếu sử dụng npm:
      ```bash
-     npm start
+     npm run dev
      ```
    - Nếu sử dụng yarn:
      ```bash
