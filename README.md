@@ -48,14 +48,3 @@
 4. **Truy cập ứng dụng:**
    - Mở trình duyệt và truy cập địa chỉ: `http://localhost:3000` (hoặc cổng mà dự án thông báo)
 
-## Đóng góp
-
-Chào mừng mọi đóng góp! Vui lòng tạo pull request hoặc issue nếu bạn muốn đề xuất thay đổi hoặc phát hiện lỗi.
-
-## Thông tin liên hệ
-
-- Chủ dự án: [Dungsenpai-ux](https://github.com/Dungsenpai-ux)
-
----
-
-*Vui lòng cập nhật thêm thông tin về công nghệ, hướng dẫn sử dụng hoặc cấu trúc dự án nếu cần chi tiết hơn.*
