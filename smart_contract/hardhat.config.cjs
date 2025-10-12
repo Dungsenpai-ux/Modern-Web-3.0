@@ -1,7 +1,15 @@
 require('@nomiclabs/hardhat-waffle');
 
 module.exports = {
-  solidity: '0.8.0',
+  solidity: {
+    version: '0.8.20',
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
+    }
+  },
   networks: {
     sepolia: {
       url: 'https://eth-sepolia.g.alchemy.com/v2/F7YtPpS7pVebJttMOhXXLNKxZQqk6llo',
