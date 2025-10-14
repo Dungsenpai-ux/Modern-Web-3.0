@@ -213,21 +213,81 @@ export const getFileFromIPFS = async (hash) => {
  */
 export const uploadImageURLToIPFS = async (imageUrl) => {
   try {
-    console.log('🌐 Downloading image from URL...');
+    console.log('🌐 Đang tải ảnh từ URL:', imageUrl);
     
-    // Download image
-    const response = await axios.get(imageUrl, {
-      responseType: 'blob'
-    });
+    // ✅ SỬ DỤNG CORS PROXY để bypass CORS restrictions
+    const corsProxies = [
+      `https://corsproxy.io/?${encodeURIComponent(imageUrl)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`,
+      imageUrl // Fallback: thử trực tiếp
+    ];
+    
+    let imageBlob = null;
+    let lastError = null;
+    
+    // Thử từng proxy cho đến khi thành công
+    for (const proxyUrl of corsProxies) {
+      try {
+        console.log(`🔄 Đang thử: ${proxyUrl.substring(0, 50)}...`);
+        
+        const response = await axios.get(proxyUrl, {
+          responseType: 'blob',
+          timeout: 10000, // 10 seconds timeout
+          headers: {
+            'Accept': 'image/*'
+          }
+        });
+        
+        imageBlob = response.data;
+        console.log('✅ Tải ảnh thành công!');
+        break; // Thành công, thoát vòng lặp
+        
+      } catch (err) {
+        console.warn(`⚠️ Proxy failed: ${err.message}`);
+        lastError = err;
+        continue; // Thử proxy tiếp theo
+      }
+    }
+    
+    // Nếu tất cả proxies đều fail
+    if (!imageBlob) {
+      console.error('❌ Không thể tải ảnh từ bất kỳ proxy nào');
+      throw lastError || new Error('Failed to download image from URL');
+    }
+    
+    // Detect file type
+    const fileType = imageBlob.type || 'image/gif';
+    const fileExtension = fileType.split('/')[1] || 'gif';
     
     // Convert to File object
-    const file = new File([response.data], 'image.gif', { type: response.data.type });
+    const file = new File([imageBlob], `image.${fileExtension}`, { type: fileType });
+    
+    console.log('📤 Đang upload lên IPFS...');
     
     // Upload to IPFS
-    return await uploadFileToIPFS(file);
+    const result = await uploadFileToIPFS(file);
+    
+    console.log('✅ Upload thành công!', result);
+    return result;
+    
   } catch (error) {
-    console.error('❌ Error uploading image URL to IPFS:', error);
-    throw error;
+    console.error('❌ Lỗi upload ảnh URL lên IPFS:', error);
+    
+    // Nếu upload file fail, thử upload JSON với URL thay thế
+    console.log('🔄 Fallback: Lưu URL trực tiếp vào IPFS...');
+    
+    try {
+      const jsonData = {
+        gifUrl: imageUrl,
+        type: 'external-url',
+        timestamp: new Date().toISOString()
+      };
+      
+      return await uploadJSONToIPFS(jsonData);
+    } catch (fallbackError) {
+      console.error('❌ Fallback cũng failed:', fallbackError);
+      throw error;
+    }
   }
 };
 

@@ -1,13 +1,15 @@
+// filepath: client/src/components/Transactions.jsx
 import React, { useContext } from "react";
-
 import { TransactionContext } from "../context/TransactionContext";
-
 import useFetch from "../hooks/useFetch";
 import dummyData from "../utils/dummyData";
 import { shortenAddress } from "../utils/shortenAddress";
 
-const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, keyword, amount, url }) => {
-  const gifUrl = useFetch({ keyword });
+const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, keyword, amount, url, gifUrl, ipfsHash }) => {
+  // ✅ ƯU TIÊN SỬ DỤNG GIF TỪ IPFS, NẾU KHÔNG CÓ THÌ DÙNG KEYWORD
+  const gifFromIPFS = gifUrl || url; // gifUrl từ IPFS data
+  const gifFromKeyword = useFetch({ keyword }); // Fallback từ Giphy API
+  const finalGif = gifFromIPFS || gifFromKeyword;
 
   return (
     <div className="bg-[#181918] m-4 flex flex-1
@@ -33,12 +35,32 @@ const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, keyword,
               <p className="text-white text-base">Message: {message}</p>
             </>
           )}
+          
+          {/* ✅ HIỂN THỊ IPFS HASH NẾU CÓ */}
+          {ipfsHash && (
+            <>
+              <br />
+              <a 
+                href={`https://ipfs.io/ipfs/${ipfsHash}`} 
+                target="_blank" 
+                rel="noreferrer"
+                className="text-blue-400 text-sm hover:underline"
+              >
+                📦 View on IPFS: {ipfsHash.substring(0, 15)}...
+              </a>
+            </>
+          )}
         </div>
-        <img
-          src={gifUrl || url}
-          alt="nature"
-          className="w-full h-64 2xl:h-96 rounded-md shadow-lg object-cover"
-        />
+        
+        {/* ✅ HIỂN THỊ GIF TỪ IPFS */}
+        {finalGif && (
+          <img
+            src={finalGif}
+            alt="gif"
+            className="w-full h-64 2xl:h-96 rounded-md shadow-lg object-cover"
+          />
+        )}
+        
         <div className="bg-black p-3 px-5 w-max rounded-3xl -mt-5 shadow-2xl">
           <p className="text-[#37c7da] font-bold">{timestamp}</p>
         </div>
@@ -64,7 +86,11 @@ const Transactions = () => {
         )}
 
         <div className="flex flex-wrap justify-center items-center mt-10">
-          {[...dummyData, ...transactions].reverse().map((transaction, i) => (
+          {/* ✅ HIỂN THỊ TẤT CẢ TRANSACTIONS VỚI DỮ LIỆU TỪ IPFS (không mutate state) */}
+          {currentAccount && transactions?.length === 0 && (
+            <p className="text-gray-300 text-base">Chưa có giao dịch nào. Hãy thử gửi một giao dịch để thấy lịch sử hiển thị ở đây.</p>
+          )}
+          {[...(transactions || [])].reverse().map((transaction, i) => (
             <TransactionsCard key={i} {...transaction} />
           ))}
         </div>

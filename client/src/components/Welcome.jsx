@@ -41,7 +41,7 @@ const Welcome = () => {
             Send Crypto <br /> across the world
           </h1>
           <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
-            Explore the crypto world. Buy and sell cryptocurrencies easily on Krypto.
+            Explore the crypto world. Buy and sell cryptocurrencies easily on Krypt.
           </p>
           {!currentAccount && (
             <button
@@ -98,6 +98,14 @@ const Welcome = () => {
             <Input placeholder="Amount (ETH)" name="amount" type="number" handleChange={handleChange} />
             <Input placeholder="Keyword (Gif)" name="keyword" type="text" handleChange={handleChange} />
             <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange} />
+            
+            {/* ✅ THÊM INPUT CHO GIF URL */}
+            <Input 
+              placeholder="GIF URL (Optional - will be stored on IPFS)" 
+              name="gifUrl" 
+              type="text" 
+              handleChange={handleChange} 
+            />
 
             <div className="h-[1px] w-full bg-gray-400 my-2" />
 

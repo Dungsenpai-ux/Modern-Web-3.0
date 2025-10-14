@@ -1,4 +1,9 @@
 import abi from "./Transactions.json";
 
-export const contractAddress = "0xa6eA5e586070ded533351d7AD8a1dD9615C267A5";
+// Đọc contract address từ environment variables
+export const contractAddress = import.meta.env.VITE_TRANSACTIONS_CONTRACT;
 export const contractABI = abi.abi;
+
+// Log để debug
+console.log("📍 Contract Address:", contractAddress);
+console.log("📄 Contract ABI:", contractABI ? "Loaded ✅" : "Missing ❌");
